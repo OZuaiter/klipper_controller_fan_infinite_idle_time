@@ -22,7 +22,7 @@ class ControllerFan:
                                          minval=0., maxval=1.)
         self.idle_speed = config.getfloat(
             'idle_speed', default=self.fan_speed, minval=0., maxval=1.)
-        self.idle_timeout = config.getint("idle_timeout", default=30, minval=0)
+        self.idle_timeout = config.getint("idle_timeout", default=30, minval=-1)
         self.heater_names = config.getlist("heater", ("extruder",))
         self.last_on = self.idle_timeout
         self.last_speed = 0.
@@ -57,6 +57,8 @@ class ControllerFan:
         if active:
             self.last_on = 0
             speed = self.fan_speed
+        elif self.idle_timeout < 0:
+            speed = self.idle_speed
         elif self.last_on < self.idle_timeout:
             speed = self.idle_speed
             self.last_on += 1
